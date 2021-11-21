@@ -27,7 +27,7 @@ class Frame(wx.Frame):
         self.caption.SetFont(font)
 
         # Save size data
-        with open('app/display_data.json', 'w', encoding='UTF-8') as f:
+        with open('gui/display_data.json', 'w', encoding='UTF-8') as f:
             f.write(json.dumps({'width': self.width, 'height': self.height, 'fontsize': self.fontsize}))
 
         # Run update caption loop in a thread

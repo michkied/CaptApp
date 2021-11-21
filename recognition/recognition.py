@@ -14,7 +14,7 @@ def clear_output():
 
 def wrapping(text_to_wrap):
     # Get display data
-    with open('app/display_data.json', 'r+', encoding='UTF-8') as f:
+    with open('gui/display_data.json', 'r+', encoding='UTF-8') as f:
         data = json.loads(f.read())
     num_of_chars = int(data['width'] / (data['fontsize'] * 0.75))
 
