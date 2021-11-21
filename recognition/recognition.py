@@ -7,8 +7,11 @@ r.pause_threshold = 0.5
 
 
 def recognise_loop():
-    with open('recognition/output.txt', 'w+', encoding='UTF-8') as f:
-        f.write('Słucham...')
+
+    def clear_output():
+        with open('recognition/output.txt', 'w+', encoding='UTF-8') as f:
+            f.write('Słucham... (wciśnij ESC by zamknąć)')
+
     previous_line = ''
 
     while True:
@@ -18,8 +21,7 @@ def recognise_loop():
             with sr.Microphone(device_index=1) as source:
                 audio = r.listen(source, phrase_time_limit=10, timeout=12)
         except sr.WaitTimeoutError:
-            with open('recognition/output.txt', 'w+', encoding='UTF-8') as f:
-                f.write('Słucham...')
+            clear_output()
             previous_line = ''
             continue
 
@@ -28,8 +30,7 @@ def recognise_loop():
             new_line = r.recognize_google(audio, language='pl-PL')
 
         except sr.UnknownValueError:
-            with open('recognition/output.txt', 'w+', encoding='UTF-8') as f:
-                f.write('Słucham...')
+            clear_output()
             previous_line = ''
 
         except sr.RequestError as e:

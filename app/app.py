@@ -12,40 +12,42 @@ class Frame(wx.Frame):
         self.SetBackgroundColour('black')
         self.SetTransparent(175)
 
-        # Calculate frame size & position
-        d_width, d_height = wx.GetDisplaySize()
-
-        w_width_ratio, w_height_ratio = 0.7, 0.05
-        pos_y_ratio, pos_x_ratio = 0.5, 0.90
-
-        width = int(d_width * w_width_ratio)
-        height = int(d_height * w_height_ratio)
-
-        pos_y = int(d_width * pos_y_ratio - d_width * w_width_ratio / 2)
-        pos_x = int(d_height * pos_x_ratio - d_height * w_height_ratio / 2)
-
-        # Set frame size & position
-        self.SetSize(width, height)
-        self.SetPosition((pos_y, pos_x))
-
-        # Create caption
-        self.caption = wx.StaticText(self, label="Słucham...", style=wx.ALIGN_CENTER_HORIZONTAL, size=(width, height), pos=(0, 0))
-        font = wx.Font(wx.Size(10, int(height/3)), family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
-        self.caption.SetForegroundColour((255, 255, 255))
-        self.caption.SetFont(font)
-
         # Bind exit method to frame
         self.Bind(wx.EVT_KEY_UP, self.exit)
         self.ongoing_esc_confirmation = False
+
+        self.init_size()
+
+        # Create caption
+        self.caption = wx.StaticText(self, label="Słucham... (wciśnij ESC by zamknąć)", style=wx.ALIGN_CENTER_HORIZONTAL, size=(self.width, self.height), pos=(0, 0))
+        font = wx.Font(18, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD) #  wx.Size((int(self.width/175)), int(self.height/3))
+        self.caption.SetForegroundColour((255, 255, 255))
+        self.caption.SetFont(font)
 
         # Run update caption loop in a thread
         thread = threading.Thread(target=self.update_caption_loop)
         thread.start()
 
+    def init_size(self):
+        # Calculate frame size & position
+        d_width, d_height = wx.GetDisplaySize()
+
+        w_width_ratio, w_height_ratio = 0.7, 0.05
+        self.width = int(d_width * w_width_ratio)
+        self.height = int(d_height * w_height_ratio)
+
+        pos_y_ratio, pos_x_ratio = 0.5, 0.90
+        pos_y = int(d_width * pos_y_ratio - d_width * w_width_ratio / 2)
+        pos_x = int(d_height * pos_x_ratio - d_height * w_height_ratio / 2)
+
+        # Set frame size & position
+        self.SetSize(self.width, self.height)
+        self.SetPosition((pos_y, pos_x))
+
     def exit(self, event):
-        if event.GetKeyCode() == 27:  # 27 is Esc
+        if event.GetKeyCode() == 27:
             if not self.ongoing_esc_confirmation:
-                self.caption.SetLabel('Wciśnij Esc ponownie by wyjść')
+                self.caption.SetLabel('Wciśnij ESC ponownie by zamknąć')
                 self.ongoing_esc_confirmation = True
             else:
                 self.Close(force=True)
