@@ -2,6 +2,7 @@ import wx
 import threading
 import time
 import sys
+import json
 
 
 class Frame(wx.Frame):
@@ -19,10 +20,15 @@ class Frame(wx.Frame):
         self.init_size()
 
         # Create caption
+        self.fontsize = 18
         self.caption = wx.StaticText(self, label="Słucham... (wciśnij ESC by zamknąć)", style=wx.ALIGN_CENTER_HORIZONTAL, size=(self.width, self.height), pos=(0, 0))
-        font = wx.Font(18, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD) #  wx.Size((int(self.width/175)), int(self.height/3))
+        font = wx.Font(self.fontsize, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
         self.caption.SetForegroundColour((255, 255, 255))
         self.caption.SetFont(font)
+
+        # Save size data
+        with open('app/display_data.json', 'w', encoding='UTF-8') as f:
+            f.write(json.dumps({'width': self.width, 'height': self.height, 'fontsize': self.fontsize}))
 
         # Run update caption loop in a thread
         thread = threading.Thread(target=self.update_caption_loop)
