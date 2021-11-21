@@ -38,7 +38,7 @@ class Frame(wx.Frame):
         # Calculate frame size & position
         d_width, d_height = wx.GetDisplaySize()
 
-        w_width_ratio, w_height_ratio = 0.7, 0.05
+        w_width_ratio, w_height_ratio = 0.8, 0.055
         self.width = int(d_width * w_width_ratio)
         self.height = int(d_height * w_height_ratio)
 
@@ -66,12 +66,15 @@ class Frame(wx.Frame):
         self.ongoing_esc_confirmation = False
 
     def update_caption_loop(self):
+        previous_text = ''
         while True:
             if not self.ongoing_esc_confirmation:
                 with open('recognition/output.txt', 'r+', encoding='UTF-8') as output:
                     text = output.read()
 
-                wx.CallAfter(self.caption.SetLabel, text)
+                if text != previous_text:
+                    wx.CallAfter(self.caption.SetLabel, text)
+                previous_text = text
             time.sleep(0.5)
 
 
