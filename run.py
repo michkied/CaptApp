@@ -1,3 +1,6 @@
+# by Michał Kiedrzyński
+# 11/2021
+
 import app
 import recognition
 import threading
