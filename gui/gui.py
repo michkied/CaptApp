@@ -30,6 +30,10 @@ class Frame(wx.Frame):
         with open('gui/display_data.json', 'w', encoding='UTF-8') as f:
             f.write(json.dumps({'width': self.width, 'height': self.height, 'fontsize': self.fontsize}))
 
+        # Clear output file
+        with open('recognition/output.txt', 'w+', encoding='UTF-8') as f:
+            f.write('Słucham... (wciśnij ESC by zamknąć)')
+
         # Run update caption loop in a thread
         thread = threading.Thread(target=self.update_caption_loop)
         thread.start()
@@ -69,7 +73,7 @@ class Frame(wx.Frame):
         previous_text = ''
         while True:
             if not self.ongoing_esc_confirmation:
-                with open('recognition/output.txt', 'r+', encoding='UTF-8') as output:
+                with open('recognition/output.txt', 'r', encoding='UTF-8') as output:
                     text = output.read()
 
                 if text != previous_text:

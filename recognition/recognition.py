@@ -8,13 +8,13 @@ r.pause_threshold = 0.5
 
 
 def clear_output():
-    with open('recognition/output.txt', 'w+', encoding='UTF-8') as f:
+    with open('recognition/output.txt', 'w', encoding='UTF-8') as f:
         f.write('Słucham... (wciśnij ESC by zamknąć)')
 
 
 def wrapping(text_to_wrap):
     # Get display data
-    with open('gui/display_data.json', 'r+', encoding='UTF-8') as f:
+    with open('gui/display_data.json', 'r', encoding='UTF-8') as f:
         data = json.loads(f.read())
     num_of_chars = int(data['width'] / (data['fontsize'] * 0.75))
 
@@ -51,7 +51,7 @@ def recognise_loop():
             previous_line = ''
 
         except sr.RequestError as e:
-            with open('recognition/output.txt', 'w+', encoding='UTF-8') as f:
+            with open('recognition/output.txt', 'w', encoding='UTF-8') as f:
                 f.write('Wystąpił błąd.')
 
         else:
@@ -60,5 +60,5 @@ def recognise_loop():
             new_text = '\n'.join(lines[:2])
             previous_line = lines[-1] + ' '
 
-            with open('recognition/output.txt', 'w+', encoding='UTF-8') as f:
+            with open('recognition/output.txt', 'w', encoding='UTF-8') as f:
                 f.write(new_text)
