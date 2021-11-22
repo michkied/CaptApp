@@ -65,10 +65,6 @@ class Frame(wx.Frame):
         else:
             self.ongoing_esc_confirmation = False
 
-    def on_click(self, event):
-        print('clicked')
-        self.ongoing_esc_confirmation = False
-
     def update_caption_loop(self):
         previous_text = ''
         while True:
