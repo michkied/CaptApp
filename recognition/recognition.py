@@ -68,14 +68,17 @@ class Recognition:
 
             # Ensure chunks are in the right order
             while chunk_id != min(self.chunk_queue):
-                time.sleep(0.2)
+                time.sleep(0.1)
 
-            # Process and save output
             lines = wrapping(self.previous_line + new_line)
             new_text = '\n'.join(lines[:2])
             self.previous_line = lines[-1] + ' '
             with open('recognition/output.txt', 'w', encoding='UTF-8') as f:
                 f.write(new_text)
+
+            # Give time to read
+            time.sleep(len(new_line)/28)
+            print('done sleeping')
 
             self.chunk_queue.remove(chunk_id)
 
