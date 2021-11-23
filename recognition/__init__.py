@@ -1,1 +1,1 @@
-from .recognition import recognise_loop
+from .recognition import Recognition
