@@ -34,7 +34,7 @@ class Frame(wx.Frame):
         with open('recognition/output.txt', 'w+', encoding='UTF-8') as f:
             f.write('Słucham... (wciśnij ESC by zamknąć)')
 
-        # Run update caption loop in a thread
+        # Run update_caption_loop in a thread
         thread = threading.Thread(target=self.update_caption_loop)
         thread.start()
 
@@ -80,6 +80,5 @@ class Frame(wx.Frame):
 
 def run():
     wxapp = wx.App()
-    f = Frame()
-    f.Show()
+    Frame().Show()
     wxapp.MainLoop()
