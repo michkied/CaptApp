@@ -20,7 +20,7 @@ class Frame(wx.Frame):
         self.init_size()
 
         # Create caption
-        self.fontsize = 18
+        self.fontsize = round(self.height * 0.27, 1)
         self.caption = wx.StaticText(self, label="Słucham... (wciśnij ESC by zamknąć)", style=wx.ALIGN_CENTER_HORIZONTAL, size=(self.width, self.height), pos=(0, 0))
         font = wx.Font(self.fontsize, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
         self.caption.SetForegroundColour((255, 255, 255))

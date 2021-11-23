@@ -90,7 +90,7 @@ class Recognition:
             f.write(new_text)
 
         # Give time to read
-        time.sleep(len(new_line) / 25)
+        time.sleep(len(new_line) / 27)
 
     def listen(self):
         try:
