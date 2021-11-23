@@ -16,7 +16,7 @@ def get_wrapped_lines(text_to_wrap):
     # Get display data
     with open('gui/display_data.json', 'r', encoding='UTF-8') as f:
         data = json.loads(f.read())
-    num_of_chars = int(data['width'] / (data['fontsize'] * 0.75))
+    num_of_chars = round(data['width'] / (data['fontsize'] * 0.75))
 
     lines = []
 

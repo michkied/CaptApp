@@ -43,12 +43,12 @@ class Frame(wx.Frame):
         d_width, d_height = wx.GetDisplaySize()
 
         w_width_ratio, w_height_ratio = 0.8, 0.055
-        self.width = int(d_width * w_width_ratio)
-        self.height = int(d_height * w_height_ratio)
+        self.width = round(d_width * w_width_ratio)
+        self.height = round(d_height * w_height_ratio)
 
         pos_y_ratio, pos_x_ratio = 0.5, 0.90
-        pos_y = int(d_width * pos_y_ratio - d_width * w_width_ratio / 2)
-        pos_x = int(d_height * pos_x_ratio - d_height * w_height_ratio / 2)
+        pos_y = round(d_width * pos_y_ratio - d_width * w_width_ratio / 2)
+        pos_x = round(d_height * pos_x_ratio - d_height * w_height_ratio / 2)
 
         # Set frame size & position
         self.SetSize(self.width, self.height)
