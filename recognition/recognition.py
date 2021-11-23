@@ -22,9 +22,9 @@ def wrapping(text_to_wrap):
 
     lines = []
     while len(text_to_wrap) > num_of_chars:
-        chunk = text_to_wrap[:num_of_chars][::-1]
-        line = chunk[chunk.find(' ') + 1:][::-1]
-        text_to_wrap = text_to_wrap.replace(line+' ', '')
+        chunk = text_to_wrap[:num_of_chars][::-1]  # Limit the chunk to max number of chars and flip it
+        line = chunk[chunk.find(' ') + 1:][::-1]  # Find the end of the line (first space of the flipped chunk), crop the string, flip it back
+        text_to_wrap = text_to_wrap.replace(line+' ', '')  # Remove extracted line from the rest of the text
         lines.append(line)
 
     lines.append(text_to_wrap)
@@ -39,7 +39,6 @@ class Recognition:
 
     def recognition_loop(self):
         while True:
-            # Assign chunks
             chunk_id = self.next_chunk_id
             self.next_chunk_id += 1
 
@@ -65,9 +64,7 @@ class Recognition:
                 f.write('Wystąpił błąd.')
 
         else:
-
-            # Ensure chunks are in the right order
-            while chunk_id != min(self.chunk_queue):
+            while chunk_id != min(self.chunk_queue):  # Ensure chunks are in the right order
                 time.sleep(0.1)
 
             lines = wrapping(self.previous_line + new_line)
