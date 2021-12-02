@@ -9,7 +9,7 @@ r.pause_threshold = 0.5
 
 def clear_output():
     with open('recognition/output.txt', 'w', encoding='UTF-8') as f:
-        f.write('Słucham... (wciśnij ESC by zamknąć)')
+        f.write('Słucham...\n(wciśnij ESC by zamknąć lub CTRL by wejść do ustawień)')
 
 
 def get_wrapped_lines(text_to_wrap):
