@@ -102,6 +102,7 @@ class Settings(wx.Frame):
         wx.Frame.__init__(self, None, title='CaptApp - ustawienia')
         self.SetBackgroundColour('black')
         self.Center(wx.BOTH)
+        self.SetIcon(wx.Icon("gui/resources/icon.ico"))
 
         menu_font = wx.Font(13, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
 
