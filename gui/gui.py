@@ -12,6 +12,7 @@ class Overlay(wx.Frame):
         wx.Frame.__init__(self, None, title='CaptApp', style=style)
         self.SetBackgroundColour('black')
 
+        # Retrieve saved settings
         try:
             with open('gui/setings.json', 'r', encoding='UTF-8') as f:
                 data = json.loads(f.read())
@@ -19,15 +20,10 @@ class Overlay(wx.Frame):
             data = {'fontSize': 15, 'transparencyValue': 175}
             with open('gui/setings.json', 'w', encoding='UTF-8') as f:
                 f.write(json.dumps(data))
-
         self.fontsize = data['fontSize']
         self.transparency_value = data['transparencyValue']
 
         self.SetTransparent(self.transparency_value)
-
-        # Bind exit method to frame
-        self.Bind(wx.EVT_KEY_UP, self.exit)
-        self.ongoing_esc_confirmation = False
 
         self.init_size()
 
@@ -36,6 +32,10 @@ class Overlay(wx.Frame):
         self.overlay_font = wx.Font(self.fontsize, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
         self.caption.SetForegroundColour((255, 255, 255))
         self.caption.SetFont(self.overlay_font)
+
+        # Bind methods
+        self.Bind(wx.EVT_KEY_UP, self.handle_key_press)
+        self.ongoing_esc_confirmation = False
 
         # Save size data
         with open('gui/display_data.json', 'w', encoding='UTF-8') as f:
@@ -65,7 +65,8 @@ class Overlay(wx.Frame):
         self.SetSize(self.width, self.height)
         self.SetPosition((pos_y, pos_x))
 
-    def exit(self, event):
+    def handle_key_press(self, event):
+        # Exit app
         if event.GetRawKeyCode() == 27:  # ESC
             if not self.ongoing_esc_confirmation:
                 self.caption.SetLabel('Wciśnij ESC ponownie by zamknąć')
@@ -74,9 +75,9 @@ class Overlay(wx.Frame):
             else:
                 self.Close(force=True)
                 sys.exit()
-
         self.ongoing_esc_confirmation = False
 
+        # Open settings
         if event.GetRawKeyCode() == 17:  # CTRL
             self.menu = Settings(self)
             self.menu.Show()
@@ -104,6 +105,8 @@ class Settings(wx.Frame):
 
         menu_font = wx.Font(13, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
 
+        # Create settings menu elements
+
         self.fontsize_text = wx.StaticText(self, label="Rozmiar czcionki", style=wx.ALIGN_CENTER_HORIZONTAL, pos=(0, 0))
         self.fontsize_text.SetForegroundColour((255, 255, 255))
         self.fontsize_text.SetFont(menu_font)
@@ -117,6 +120,7 @@ class Settings(wx.Frame):
 
         self.transparencySlider = wx.Slider(self, minValue=10, maxValue=255, size=(400, 50), id=1001, value=self.overlay_frame.transparency_value)
 
+        # Align elements
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.fontsize_text, 0, wx.LEFT | wx.RIGHT | wx.TOP, 20)
         sizer.Add(self.fontsizeSlider, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 30)
@@ -124,16 +128,19 @@ class Settings(wx.Frame):
         sizer.Add(self.transparencySlider, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 30)
         self.SetSizer(sizer)
 
+        # Bind methods
         self.Bind(wx.EVT_SCROLL, self.update_font_size, id=1000)
         self.Bind(wx.EVT_SCROLL, self.update_transparency, id=1001)
         self.Bind(wx.EVT_CLOSE, self.save_and_exit)
 
+    # Handle font size slider
     def update_font_size(self, args):
         value = self.fontsizeSlider.GetValue()
         self.overlay_frame.fontsize = value
         self.overlay_frame.overlay_font.SetPointSize(value)
         self.overlay_frame.caption.SetFont(self.overlay_frame.overlay_font)
 
+    # Handle transparency slider
     def update_transparency(self, args):
         value = self.transparencySlider.GetValue()
         self.overlay_frame.transparency_value = value
