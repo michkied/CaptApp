@@ -29,3 +29,6 @@ msgstr "Rozmiar czcionki"
 
 msgid "Window transparency"
 msgstr "Przezroczystość okna"
+
+msgid "Interface language"
+msgstr "Język interfejsu"

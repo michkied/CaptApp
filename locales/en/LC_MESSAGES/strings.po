@@ -26,3 +26,6 @@ msgstr "Font size"
 
 msgid "Window transparency"
 msgstr "Window transparency"
+
+msgid "Interface language"
+msgstr "Interface language"

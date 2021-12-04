@@ -24,14 +24,14 @@ class Overlay(wx.Frame):
         self.language = settings['language']
 
         # Support multiple interface languages
-        pl = gettext.translation('strings', localedir='locales', languages=['pl'])
-        pl.install()
-        en = gettext.translation('strings', localedir='locales', languages=['en'])
-        en.install()
+        self.pl = gettext.translation('strings', localedir='locales', languages=['pl'])
+        self.pl.install()
+        self.en = gettext.translation('strings', localedir='locales', languages=['en'])
+        self.en.install()
         if self.language == 'pl':
-            self.gt = pl.gettext
+            self.gt = self.pl.gettext
         else:
-            self.gt = en.gettext
+            self.gt = self.en.gettext
 
         style = (wx.CLIP_CHILDREN | wx.STAY_ON_TOP | wx.FRAME_NO_TASKBAR |
                  wx.NO_BORDER | wx.FRAME_SHAPED)
@@ -112,7 +112,7 @@ class Overlay(wx.Frame):
 
                     wx.CallAfter(self.caption.SetLabel, text)
                 previous_text = text
-            time.sleep(0.5)
+            time.sleep(0.25)
 
 
 def run():
