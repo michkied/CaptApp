@@ -8,15 +8,19 @@ r.pause_threshold = 0.5
 
 
 def clear_output():
-    with open('recognition/output.txt', 'w', encoding='UTF-8') as f:
+    with open('temp/output.txt', 'w', encoding='UTF-8') as f:
         f.write('Słucham...\n(wciśnij ESC by zamknąć lub CTRL by wejść do ustawień)')
 
 
 def get_wrapped_lines(text_to_wrap):
     # Get display data
-    with open('gui/display_data.json', 'r', encoding='UTF-8') as f:
+    with open('temp/display_data.json', 'r', encoding='UTF-8') as f:
         data = json.loads(f.read())
-    num_of_chars = round(data['width'] / (data['fontsize'] * 0.75))
+
+    with open('gui/settings.json', 'r', encoding='UTF-8') as f:
+        fontsize = json.loads(f.read())['fontSize']
+
+    num_of_chars = round(data['width'] / (fontsize * 0.75))
 
     lines = []
 
@@ -64,7 +68,7 @@ class Recognition:
             clear_output()
             self.carry = ''
         except sr.RequestError as e:
-            with open('recognition/output.txt', 'w', encoding='UTF-8') as f:
+            with open('temp/output.txt', 'w', encoding='UTF-8') as f:
                 f.write('Wystąpił błąd.')
 
         else:
@@ -86,7 +90,7 @@ class Recognition:
             else:
                 self.carry = '\n'.join(lines[2:]) + ' '  # If there are more than 2 lines, display them next time
 
-        with open('recognition/output.txt', 'w', encoding='UTF-8') as f:
+        with open('temp/output.txt', 'w', encoding='UTF-8') as f:
             f.write(new_text)
 
         # Give time to read
