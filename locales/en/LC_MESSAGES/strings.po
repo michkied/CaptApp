@@ -1,0 +1,28 @@
+# CaptApp
+# Copyright (C) 2021 Michał Kiedrzyński
+#
+
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+# Overlay
+msgid ""
+"Listening...\n"
+"(press ESC to exit or CTRL to open settings)"
+msgstr ""
+"Listening...\n"
+"(press ESC to exit or CTRL to open settings)"
+
+msgid "Press ESC again to exit"
+msgstr "Press ESC again to exit"
+
+# Settings menu
+msgid "CaptApp - settings"
+msgstr "CaptApp - settings"
+
+msgid "Font size"
+msgstr "Font size"
+
+msgid "Window transparency"
+msgstr "Window transparency"

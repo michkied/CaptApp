@@ -1,0 +1,31 @@
+# CaptApp
+# Copyright (C) 2021 Michał Kiedrzyński
+#
+
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+# Overlay
+msgid ""
+"Listening...\n"
+"(press ESC to exit or CTRL to open settings)"
+msgstr ""
+"Słucham...\n"
+"(wciśnij ESC by zamknąć lub CTRL by przejść do ustawień)"
+
+msgid "Press ESC again to exit"
+msgstr "Wciśnij ESC ponownie by zamknąć"
+
+msgid "An error occurred. Please check your internet connection and restart CaptApp."
+msgstr "Wystąpił błąd. Sprawdź swoje połączenie z internetem i uruchom CaptApp ponownie."
+
+# Settings menu
+msgid "CaptApp - settings"
+msgstr "CaptApp - ustawienia"
+
+msgid "Font size"
+msgstr "Rozmiar czcionki"
+
+msgid "Window transparency"
+msgstr "Przezroczystość okna"

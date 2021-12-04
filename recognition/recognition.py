@@ -9,7 +9,7 @@ r.pause_threshold = 0.5
 
 def clear_output():
     with open('temp/output.txt', 'w', encoding='UTF-8') as f:
-        f.write('Słucham...\n(wciśnij ESC by zamknąć lub CTRL by wejść do ustawień)')
+        f.write('###CLEAR###')
 
 
 def get_wrapped_lines(text_to_wrap):
@@ -69,7 +69,7 @@ class Recognition:
             self.carry = ''
         except sr.RequestError as e:
             with open('temp/output.txt', 'w', encoding='UTF-8') as f:
-                f.write('Wystąpił błąd.')
+                f.write('###ERROR###')
 
         else:
             while chunk_id != min(self.chunk_queue):  # Ensure chunks are in the right order

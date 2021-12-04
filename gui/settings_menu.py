@@ -5,8 +5,10 @@ import json
 class Settings(wx.Frame):
     def __init__(self, overlay):
 
+        self.gt = overlay.gt
+
         self.overlay_frame = overlay
-        wx.Frame.__init__(self, None, title='CaptApp - ustawienia')
+        wx.Frame.__init__(self, None, title=self.gt('CaptApp - settings'))
         self.SetBackgroundColour('black')
         self.Center(wx.BOTH)
         self.SetIcon(wx.Icon("gui/resources/icon.ico"))
@@ -15,14 +17,14 @@ class Settings(wx.Frame):
 
         # Create settings menu elements
 
-        self.fontsize_text = wx.StaticText(self, label="Rozmiar czcionki", style=wx.ALIGN_CENTER_HORIZONTAL, pos=(0, 0))
+        self.fontsize_text = wx.StaticText(self, label=self.gt("Font size"), style=wx.ALIGN_CENTER_HORIZONTAL, pos=(0, 0))
         self.fontsize_text.SetForegroundColour((255, 255, 255))
         self.fontsize_text.SetFont(menu_font)
 
         self.fontsizeSlider = wx.Slider(self, minValue=5, maxValue=50, size=(400, -1), style=wx.SL_AUTOTICKS, id=1000, value=self.overlay_frame.fontsize)
         self.fontsizeSlider.SetTick(45)
 
-        self.transparency_text = wx.StaticText(self, label="Przezroczystość okna", style=wx.ALIGN_CENTER_HORIZONTAL, pos=(0, 0))
+        self.transparency_text = wx.StaticText(self, label=self.gt("Window transparency"), style=wx.ALIGN_CENTER_HORIZONTAL, pos=(0, 0))
         self.transparency_text.SetForegroundColour((255, 255, 255))
         self.transparency_text.SetFont(menu_font)
 
@@ -55,7 +57,11 @@ class Settings(wx.Frame):
         self.overlay_frame.SetTransparent(value)
 
     def save_and_exit(self, args):
-        data = {'fontSize': self.overlay_frame.fontsize, 'transparencyValue': self.overlay_frame.transparency_value}
+
+        data = {'fontSize': self.overlay_frame.fontsize,
+                'transparencyValue': self.overlay_frame.transparency_value,
+                'language': self.overlay_frame.language}
+
         with open('gui/settings.json', 'w', encoding='UTF-8') as f:
             f.write(json.dumps(data))
 

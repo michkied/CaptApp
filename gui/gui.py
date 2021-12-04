@@ -3,33 +3,46 @@ import threading
 import time
 import sys
 import json
+import gettext
+
 from .settings_menu import Settings
 
 
 class Overlay(wx.Frame):
     def __init__(self):
-        style = (wx.CLIP_CHILDREN | wx.STAY_ON_TOP | wx.FRAME_NO_TASKBAR |
-                 wx.NO_BORDER | wx.FRAME_SHAPED)
-        wx.Frame.__init__(self, None, title='CaptApp', style=style)
-        self.SetBackgroundColour('black')
 
         # Retrieve saved settings
         try:
             with open('gui/settings.json', 'r', encoding='UTF-8') as f:
-                data = json.loads(f.read())
+                settings = json.loads(f.read())
         except (json.decoder.JSONDecodeError, FileNotFoundError):
-            data = {'fontSize': 15, 'transparencyValue': 175}
+            settings = {'fontSize': 15, 'transparencyValue': 175, 'language': 'en'}
             with open('gui/settings.json', 'w', encoding='UTF-8') as f:
-                f.write(json.dumps(data))
-        self.fontsize = data['fontSize']
-        self.transparency_value = data['transparencyValue']
+                f.write(json.dumps(settings))
+        self.fontsize = settings['fontSize']
+        self.transparency_value = settings['transparencyValue']
+        self.language = settings['language']
 
+        # Support multiple interface languages
+        pl = gettext.translation('strings', localedir='locales', languages=['pl'])
+        pl.install()
+        en = gettext.translation('strings', localedir='locales', languages=['en'])
+        en.install()
+        if self.language == 'pl':
+            self.gt = pl.gettext
+        else:
+            self.gt = en.gettext
+
+        style = (wx.CLIP_CHILDREN | wx.STAY_ON_TOP | wx.FRAME_NO_TASKBAR |
+                 wx.NO_BORDER | wx.FRAME_SHAPED)
+        wx.Frame.__init__(self, None, title='CaptApp', style=style)
+        self.SetBackgroundColour('black')
         self.SetTransparent(self.transparency_value)
 
         self.init_size()
 
         # Create caption
-        self.caption = wx.StaticText(self, label="Słucham... (wciśnij ESC by zamknąć)", style=wx.ALIGN_CENTER_HORIZONTAL, size=(self.width, self.height), pos=(0, 0))
+        self.caption = wx.StaticText(self, label=self.gt("Listening...\n(press ESC to exit or CTRL to open settings)"), style=wx.ALIGN_CENTER_HORIZONTAL, size=(self.width, self.height), pos=(0, 0))
         self.overlay_font = wx.Font(self.fontsize, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
         self.caption.SetForegroundColour((255, 255, 255))
         self.caption.SetFont(self.overlay_font)
@@ -44,7 +57,7 @@ class Overlay(wx.Frame):
 
         # Clear output file
         with open('temp/output.txt', 'w+', encoding='UTF-8') as f:
-            f.write('Słucham...\n(wciśnij ESC by zamknąć lub CTRL by wejść do ustawień)')
+            f.write(self.gt("Listening...\n(press ESC to exit or CTRL to open settings)"))
 
         # Run update_caption_loop in a thread
         thread = threading.Thread(target=self.update_caption_loop)
@@ -70,7 +83,7 @@ class Overlay(wx.Frame):
         # Exit app
         if event.GetRawKeyCode() == 27:  # ESC
             if not self.ongoing_esc_confirmation:
-                self.caption.SetLabel('Wciśnij ESC ponownie by zamknąć')
+                self.caption.SetLabel(self.gt('Press ESC again to exit'))
                 self.ongoing_esc_confirmation = True
                 return
             else:
@@ -91,6 +104,12 @@ class Overlay(wx.Frame):
                     text = output.read()
 
                 if text != previous_text:
+
+                    if text == '###ERROR###':
+                        text = self.gt('An error occurred.')
+                    elif text == '###CLEAR###':
+                        text = self.gt('Listening...\n(press ESC to exit or CTRL to open settings)')
+
                     wx.CallAfter(self.caption.SetLabel, text)
                 previous_text = text
             time.sleep(0.5)
