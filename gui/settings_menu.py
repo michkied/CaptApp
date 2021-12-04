@@ -14,7 +14,7 @@ class Settings(wx.Frame):
         self.SetIcon(wx.Icon("gui/resources/icon.ico"))
 
         menu_font14 = wx.Font(14, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
-        menu_font12 = wx.Font(12, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
+        menu_font12 = wx.Font(12, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.NORMAL)
 
         # Create settings menu elements
 
