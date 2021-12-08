@@ -93,6 +93,15 @@ class Overlay(wx.Frame):
 
         # Open settings
         if event.GetRawKeyCode() == 17:  # CTRL
+
+            # Allow only one settings window
+            try:
+                if self.menu.IsShown():
+                    self.menu.SetFocus()
+                    return
+            except (AttributeError, RuntimeError):
+                pass
+
             self.menu = Settings(self)
             self.menu.Show()
 
