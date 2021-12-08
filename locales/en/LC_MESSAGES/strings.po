@@ -29,3 +29,6 @@ msgstr "Window transparency"
 
 msgid "Interface language"
 msgstr "Interface language"
+
+msgid "Audio language"
+msgstr "Audio language"

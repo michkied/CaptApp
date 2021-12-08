@@ -61,9 +61,12 @@ class Recognition:
 
     def process_audio(self, audio, chunk_id):
 
+        with open('gui/settings.json', 'r', encoding='UTF-8') as f:
+            language = json.loads(f.read())['audioLang']
+
         # Perform speech recognition
         try:
-            new_line = r.recognize_google(audio, language='pl-PL')
+            new_line = r.recognize_google(audio, language=language)
         except sr.UnknownValueError:
             clear_output()
             self.carry = ''

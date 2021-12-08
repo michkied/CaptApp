@@ -32,3 +32,6 @@ msgstr "Przezroczystość okna"
 
 msgid "Interface language"
 msgstr "Język interfejsu"
+
+msgid "Audio language"
+msgstr "Język dźwięku"

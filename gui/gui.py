@@ -16,19 +16,20 @@ class Overlay(wx.Frame):
             with open('gui/settings.json', 'r', encoding='UTF-8') as f:
                 settings = json.loads(f.read())
         except (json.decoder.JSONDecodeError, FileNotFoundError):
-            settings = {'fontSize': 15, 'transparencyValue': 175, 'language': 'en'}
+            settings = {'fontSize': 16, 'transparencyValue': 175, 'interfaceLang': 'en', 'audioLang': 'en'}
             with open('gui/settings.json', 'w', encoding='UTF-8') as f:
                 f.write(json.dumps(settings))
         self.fontsize = settings['fontSize']
         self.transparency_value = settings['transparencyValue']
-        self.language = settings['language']
+        self.interface_language = settings['interfaceLang']
+        self.audio_language = settings['audioLang']
 
         # Support multiple interface languages
         self.pl = gettext.translation('strings', localedir='locales', languages=['pl'])
         self.pl.install()
         self.en = gettext.translation('strings', localedir='locales', languages=['en'])
         self.en.install()
-        if self.language == 'pl':
+        if self.interface_language == 'pl':
             self.gt = self.pl.gettext
         else:
             self.gt = self.en.gettext

@@ -2,12 +2,14 @@ import wx
 import wx.adv
 import json
 
+from .languages import interface_languages, audio_languages
+
 
 class Settings(wx.Frame):
     def __init__(self, parent):
         self.p = parent
 
-        wx.Frame.__init__(self, None, title=self.p.gt('CaptApp - settings'), size=(450, 600))
+        wx.Frame.__init__(self, None, title=self.p.gt('CaptApp - settings'), size=(450, 650))
         self.SetBackgroundColour('white')
 
         self.Center(wx.BOTH)
@@ -36,38 +38,51 @@ class Settings(wx.Frame):
         self.transparencySlider = wx.Slider(self, minValue=10, maxValue=255, size=(400, 40), id=1001, value=self.p.transparency_value)
         self.transparencySlider.SetBackgroundColour((255, 255, 255))
 
+        # Interface language
         self.interface_language_label = wx.StaticText(self, label=self.p.gt("Interface language"), style=wx.ALIGN_CENTER)
         self.interface_language_label.SetForegroundColour((0, 0, 0))
         self.interface_language_label.SetBackgroundColour((255, 255, 255))
         self.interface_language_label.SetFont(menu_font14)
 
-        languages = ['English', 'Polski']
-        if self.p.language == 'pl':
-            lang_text = languages[1]
-        else:
-            lang_text = languages[0]
-        self.interface_language_list = wx.adv.OwnerDrawnComboBox(self, style=(wx.LB_SINGLE | wx.LB_OWNERDRAW), choices=languages, id=1002, value=lang_text, size=(150, -1))
+        lang_text = interface_languages[self.p.interface_language]
+        self.interface_language_list = wx.adv.OwnerDrawnComboBox(self, style=(wx.LB_SINGLE | wx.LB_OWNERDRAW), choices=list(interface_languages.values()), id=1002, value=lang_text, size=(150, -1))
         self.interface_language_list.SetFont(menu_font12)
         self.interface_language_list.SetBackgroundColour((255, 255, 255))
         self.interface_language_list.SetForegroundColour((0, 0, 0))
         self.interface_language_list.SetTransparent(70)
 
+        # Audio language
+        self.audio_language_label = wx.StaticText(self, label=self.p.gt("Audio language"), style=wx.ALIGN_CENTER)
+        self.audio_language_label.SetForegroundColour((0, 0, 0))
+        self.audio_language_label.SetBackgroundColour((255, 255, 255))
+        self.audio_language_label.SetFont(menu_font14)
+
+        lang_text = list(audio_languages.keys())[list(audio_languages.values()).index(self.p.audio_language)]
+        self.audio_language_list = wx.adv.OwnerDrawnComboBox(self, style=(wx.LB_SINGLE | wx.LB_OWNERDRAW), choices=list(audio_languages.keys()), id=1003, value=lang_text, size=(150, -1))
+        self.audio_language_list.SetFont(menu_font12)
+        self.audio_language_list.SetBackgroundColour((255, 255, 255))
+        self.audio_language_list.SetForegroundColour((0, 0, 0))
+        self.audio_language_list.SetTransparent(70)
+
         # Align elements
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.logo_bitmap, 0, wx.ALIGN_CENTER | wx.TOP | wx.BOTTOM, 30)
-        sizer.Add(self.fontsize_label, 0, wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT, 30)
+        sizer.Add(self.fontsize_label, 0, wx.ALIGN_CENTER, 0)
         sizer.Add(self.fontsizeSlider, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 30)
-        sizer.Add(self.transparency_label, 0, wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.TOP, 30)
+        sizer.Add(self.transparency_label, 0, wx.ALIGN_CENTER | wx.TOP, 30)
         sizer.Add(self.transparencySlider, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 30)
-        sizer.Add(self.interface_language_label, 0, wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.TOP, 20)
+        sizer.Add(self.interface_language_label, 0, wx.ALIGN_CENTER | wx.TOP, 20)
         sizer.Add(self.interface_language_list, 0, wx.ALIGN_CENTER | wx.TOP, 10)
+        sizer.Add(self.audio_language_label, 0, wx.ALIGN_CENTER | wx.TOP, 25)
+        sizer.Add(self.audio_language_list, 0, wx.ALIGN_CENTER | wx.TOP, 10)
         self.SetSizer(sizer)
 
         # Bind methods
         self.Bind(wx.EVT_SCROLL, self.update_font_size, id=1000)
         self.Bind(wx.EVT_SCROLL, self.update_transparency, id=1001)
         self.Bind(wx.EVT_COMBOBOX, self.update_interface_language, id=1002)
-        self.Bind(wx.EVT_CLOSE, self.save_and_exit)
+        self.Bind(wx.EVT_COMBOBOX, self.update_audio_language, id=1003)
+        self.Bind(wx.EVT_CLOSE, self.exit)
 
     # Handle font size slider
     def update_font_size(self, args):
@@ -86,10 +101,10 @@ class Settings(wx.Frame):
     def update_interface_language(self, args):
         value = self.interface_language_list.GetValue()
         if value == 'Polski':
-            self.p.language = 'pl'
+            self.p.interface_language = 'pl'
             self.p.gt = self.p.pl.gettext
         else:
-            self.p.language = 'en'
+            self.p.interface_language = 'en'
             self.p.gt = self.p.en.gettext
 
         with open('temp/output.txt', 'w+', encoding='UTF-8') as f:
@@ -98,15 +113,24 @@ class Settings(wx.Frame):
         self.fontsize_label.SetLabel(self.p.gt("Font size"))
         self.transparency_label.SetLabel(self.p.gt('Window transparency'))
         self.interface_language_label.SetLabel(self.p.gt('Interface language'))
+        self.audio_language_label.SetLabel(self.p.gt("Audio language"))
 
         self.Layout()
 
-    def save_and_exit(self, args):
+    def update_audio_language(self, args):
+        value = self.audio_language_list.GetValue()
+        self.p.audio_language = audio_languages[value]
+        self.save()
+
+    def save(self):
         data = {'fontSize': self.p.fontsize,
                 'transparencyValue': self.p.transparency_value,
-                'language': self.p.language}
+                'interfaceLang': self.p.interface_language,
+                'audioLang': self.p.audio_language}
 
         with open('gui/settings.json', 'w', encoding='UTF-8') as f:
             f.write(json.dumps(data))
 
+    def exit(self, args):
+        self.save()
         self.Destroy()
