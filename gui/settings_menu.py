@@ -99,8 +99,7 @@ class Settings(wx.Frame):
         self.transparency_label.SetLabel(self.p.gt('Window transparency'))
         self.interface_language_label.SetLabel(self.p.gt('Interface language'))
 
-        sizer = self.fontsize_label.GetContainingSizer()
-        sizer.Layout()
+        self.Layout()
 
     def save_and_exit(self, args):
         data = {'fontSize': self.p.fontsize,
