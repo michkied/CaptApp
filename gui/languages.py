@@ -6,7 +6,12 @@ interface_languages = {
 }
 
 audio_languages = {
-    'Polski': 'pl-PL',
-    'English': 'en'
+    'English': 'en',
+    'Polski': 'pl',
+    'Deutsch': 'de',
+    'Español': 'es',
+    'Français': 'fr',
+    'русский': 'ru',
+    'Italiano': 'it'
 }
 
