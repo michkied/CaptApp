@@ -97,14 +97,11 @@ class Overlay(wx.Frame):
 
             # Allow only one settings window
             try:
-                if self.menu.IsShown():
-                    self.menu.SetFocus()
-                    return
+                self.menu.IsShown()
             except (AttributeError, RuntimeError):
-                pass
-
-            self.menu = Settings(self)
-            self.menu.Show()
+                self.menu = Settings(self)
+                self.menu.Show()
+            self.menu.SetFocus()
 
     def update_caption_loop(self):
         previous_text = ''
