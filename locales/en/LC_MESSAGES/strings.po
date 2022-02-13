@@ -38,3 +38,6 @@ msgstr "Settings"
 
 msgid "Run"
 msgstr "Run"
+
+msgid "Stop"
+msgstr "Stop"

@@ -48,14 +48,15 @@ class Menu(wx.Frame):
 
         column1 = wx.BoxSizer(wx.VERTICAL)
 
-        self.run_overlay_button = wx.Button(self, id=100, size=(100, 100))
-        self.run_overlay_button.SetBitmap(wx.Bitmap(wx.Image('gui/resources/run.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
-        self.run_overlay_button.SetDefault()
-        column1.Add(self.run_overlay_button, 0, wx.ALIGN_CENTER | wx.BOTTOM, 10)
+        self.is_toggle_run = True
+        self.toggle_overlay_button = wx.Button(self, id=100, size=(100, 100))
+        self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('gui/resources/run.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
+        self.toggle_overlay_button.SetDefault()
+        column1.Add(self.toggle_overlay_button, 0, wx.ALIGN_CENTER | wx.BOTTOM, 10)
 
-        self.run_label = wx.StaticText(self, label=self.gt("Run"), style=wx.ALIGN_CENTER)
-        self.run_label.SetFont(menu_font14)
-        column1.Add(self.run_label, 0, wx.ALIGN_CENTER)
+        self.toggle_label = wx.StaticText(self, label=self.gt("Run"), style=wx.ALIGN_CENTER)
+        self.toggle_label.SetFont(menu_font14)
+        column1.Add(self.toggle_label, 0, wx.ALIGN_CENTER)
 
         column2 = wx.BoxSizer(wx.VERTICAL)
 
@@ -75,17 +76,29 @@ class Menu(wx.Frame):
 
         self.SetSizer(main_vertical_sizer)
 
-        self.Bind(wx.EVT_BUTTON, self.run_overlay, id=100)
+        self.Bind(wx.EVT_BUTTON, self.toggle_overlay, id=100)
         self.Bind(wx.EVT_BUTTON, self.open_settings, id=101)
         self.Bind(wx.EVT_CLOSE, self.close)
 
-    def run_overlay(self, event):
-        try:
-            self.overlay.IsShown()
-        except (AttributeError, RuntimeError):
-            self.overlay = Overlay(self)
-            self.overlay.Show()
-        self.overlay.SetFocus()
+    def toggle_overlay(self, event):
+        if self.is_toggle_run:
+            try:
+                self.overlay.IsShown()
+            except (AttributeError, RuntimeError):
+                self.overlay = Overlay(self)
+                self.overlay.Show()
+            self.overlay.SetFocus()
+            self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('gui/resources/stop.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
+            self.toggle_label.SetLabel(self.gt('Stop'))
+            self.is_toggle_run = False
+
+        else:
+            self.overlay.Destroy()
+            self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('gui/resources/run.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
+            self.toggle_label.SetLabel(self.gt('Run'))
+            self.is_toggle_run = True
+
+        self.Layout()
 
     def open_settings(self, event):
         try:

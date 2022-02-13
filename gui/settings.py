@@ -118,7 +118,10 @@ class Settings(wx.Frame):
         self.interface_language_label.SetLabel(self.p.gt('Interface language'))
         self.audio_language_label.SetLabel(self.p.gt("Audio language"))
 
-        self.p.run_label.SetLabel(self.p.gt("Run"))
+        if self.p.is_toggle_run:
+            self.p.toggle_label.SetLabel(self.p.gt("Run"))
+        else:
+            self.p.toggle_label.SetLabel(self.p.gt("Stop"))
         self.p.open_settings_label.SetLabel(self.p.gt("Settings"))
 
         self.Layout()

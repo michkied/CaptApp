@@ -53,6 +53,12 @@ class Overlay(wx.Frame):
     def update_caption_loop(self):
         previous_text = ''
         while True:
+
+            try:
+                self.IsShown()
+            except RuntimeError:
+                return
+
             with open('temp/output.txt', 'r', encoding='UTF-8') as output:
                 text = output.read()
 
