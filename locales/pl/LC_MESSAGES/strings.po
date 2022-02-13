@@ -8,14 +8,11 @@ msgstr ""
 
 # Overlay
 msgid ""
-"Listening...\n"
-"(press ESC to exit or CTRL to open settings)"
+"Welcome to CaptApp!\n"
+"Play your audio and the transcription will be displayed here"
 msgstr ""
-"Słucham...\n"
-"(wciśnij ESC by zamknąć lub CTRL by przejść do ustawień)"
-
-msgid "Press ESC again to exit"
-msgstr "Wciśnij ESC ponownie by zamknąć"
+"Witaj w CaptApp!\n"
+"Zacznij odtarzać dźwięk, a transkrypcja pojawi się tutaj"
 
 msgid "An error occurred. Please check your internet connection and restart CaptApp."
 msgstr "Wystąpił błąd. Sprawdź swoje połączenie z internetem i uruchom CaptApp ponownie."
@@ -35,3 +32,9 @@ msgstr "Język interfejsu"
 
 msgid "Audio language"
 msgstr "Język dźwięku"
+
+msgid "Settings"
+msgstr "Ustawienia"
+
+msgid "Run"
+msgstr "Uruchom"
