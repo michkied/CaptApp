@@ -1,10 +1,10 @@
 import wx
 import sys
-import json
 import gettext
 
 from .settings import Settings
 from .overlay import Overlay
+from CaptApp.common import AppSettings
 
 
 class Menu(wx.Frame):
@@ -18,24 +18,14 @@ class Menu(wx.Frame):
         menu_font14 = wx.Font(14, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
 
         # Retrieve saved settings
-        try:
-            with open('gui/settings.json', 'r', encoding='UTF-8') as f:
-                settings = json.loads(f.read())
-        except (json.decoder.JSONDecodeError, FileNotFoundError):
-            settings = {'fontSize': 16, 'transparencyValue': 175, 'interfaceLang': 'en', 'audioLang': 'en'}
-            with open('gui/settings.json', 'w', encoding='UTF-8') as f:
-                f.write(json.dumps(settings))
-        self.fontsize = settings['fontSize']
-        self.transparency_value = settings['transparencyValue']
-        self.interface_language = settings['interfaceLang']
-        self.audio_language = settings['audioLang']
+        self.settings = AppSettings()
 
         # Support multiple interface languages
         self.pl = gettext.translation('strings', localedir='locales', languages=['pl'])
         self.pl.install()
         self.en = gettext.translation('strings', localedir='locales', languages=['en'])
         self.en.install()
-        if self.interface_language == 'pl':
+        if self.settings.interface_lang == 'pl':
             self.gt = self.pl.gettext
         else:
             self.gt = self.en.gettext
@@ -102,11 +92,11 @@ class Menu(wx.Frame):
 
     def open_settings(self, event):
         try:
-            self.settings.IsShown()
+            self.settings_menu.IsShown()
         except (AttributeError, RuntimeError):
-            self.settings = Settings(self)
-            self.settings.Show()
-        self.settings.SetFocus()
+            self.settings_menu = Settings(self)
+            self.settings_menu.Show()
+        self.settings_menu.SetFocus()
 
     def close(self, event):
         sys.exit()

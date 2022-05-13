@@ -12,13 +12,13 @@ class Overlay(wx.Frame):
                  wx.NO_BORDER | wx.FRAME_SHAPED)
         wx.Frame.__init__(self, None, title=self.p.gt('CaptApp - overlay'), style=style)
         self.SetBackgroundColour('black')
-        self.SetTransparent(self.p.transparency_value)
+        self.SetTransparent(self.p.settings.transparency_value)
 
         self.init_size()
 
         # Create caption
         self.caption = wx.StaticText(self, label=self.p.gt("Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here"), style=wx.ALIGN_CENTER_HORIZONTAL, size=(self.width, self.height), pos=(0, 0))
-        self.overlay_font = wx.Font(self.p.fontsize, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
+        self.overlay_font = wx.Font(self.p.settings.font_size, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
         self.caption.SetForegroundColour((255, 255, 255))
         self.caption.SetFont(self.overlay_font)
 

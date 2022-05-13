@@ -1,6 +1,5 @@
 import wx
 import wx.adv
-import json
 
 from .languages import interface_languages, audio_languages
 
@@ -28,20 +27,20 @@ class Settings(wx.Frame):
         self.fontsize_label = wx.StaticText(self, label=self.p.gt("Font size"), style=wx.ALIGN_CENTER)
         self.fontsize_label.SetFont(menu_font14)
 
-        self.fontsizeSlider = wx.Slider(self, minValue=5, maxValue=50, size=(400, 40), style=wx.SL_AUTOTICKS, id=1000, value=self.p.fontsize)
+        self.fontsizeSlider = wx.Slider(self, minValue=5, maxValue=50, size=(400, 40), style=wx.SL_AUTOTICKS, id=1000, value=self.p.settings.font_size)
         self.fontsizeSlider.SetBackgroundColour((255, 255, 255))
 
         self.transparency_label = wx.StaticText(self, label=self.p.gt("Window transparency"), style=wx.ALIGN_CENTER)
         self.transparency_label.SetFont(menu_font14)
 
-        self.transparencySlider = wx.Slider(self, minValue=10, maxValue=255, size=(400, 40), id=1001, value=self.p.transparency_value)
+        self.transparencySlider = wx.Slider(self, minValue=10, maxValue=255, size=(400, 40), id=1001, value=self.p.settings.transparency_value)
         self.transparencySlider.SetBackgroundColour((255, 255, 255))
 
         # Interface language
         self.interface_language_label = wx.StaticText(self, label=self.p.gt("Interface language"), style=wx.ALIGN_CENTER)
         self.interface_language_label.SetFont(menu_font14)
 
-        lang_text = interface_languages[self.p.interface_language]
+        lang_text = interface_languages[self.p.settings.interface_lang]
         self.interface_language_list = wx.adv.OwnerDrawnComboBox(self, style=(wx.LB_SINGLE | wx.LB_OWNERDRAW), choices=list(interface_languages.values()), id=1002, value=lang_text, size=(150, -1))
         self.interface_language_list.SetFont(menu_font12)
         self.interface_language_list.SetBackgroundColour((255, 255, 255))
@@ -52,7 +51,7 @@ class Settings(wx.Frame):
         self.audio_language_label = wx.StaticText(self, label=self.p.gt("Audio language"), style=wx.ALIGN_CENTER)
         self.audio_language_label.SetFont(menu_font14)
 
-        lang_text = list(audio_languages.keys())[list(audio_languages.values()).index(self.p.audio_language)]
+        lang_text = list(audio_languages.keys())[list(audio_languages.values()).index(self.p.settings.audio_lang)]
         self.audio_language_list = wx.adv.OwnerDrawnComboBox(self, style=(wx.LB_SINGLE | wx.LB_OWNERDRAW), choices=list(audio_languages.keys()), id=1003, value=lang_text, size=(150, -1))
         self.audio_language_list.SetFont(menu_font12)
         self.audio_language_list.SetBackgroundColour((255, 255, 255))
@@ -83,7 +82,7 @@ class Settings(wx.Frame):
     # Handle font size slider
     def update_font_size(self, args):
         value = self.fontsizeSlider.GetValue()
-        self.p.fontsize = value
+        self.p.settings.font_size = value
         try:
             self.p.overlay.overlay_font.SetPointSize(value)
             self.p.overlay.caption.SetFont(self.p.overlay.overlay_font)
@@ -93,7 +92,7 @@ class Settings(wx.Frame):
     # Handle transparency slider
     def update_transparency(self, args):
         value = self.transparencySlider.GetValue()
-        self.p.transparency_value = value
+        self.p.settings.transparency_value = value
         try:
             self.p.overlay.SetTransparent(value)
         except AttributeError:
@@ -103,10 +102,10 @@ class Settings(wx.Frame):
     def update_interface_language(self, args):
         value = self.interface_language_list.GetValue()
         if value == 'Polski':
-            self.p.interface_language = 'pl'
+            self.p.settings.interface_lang = 'pl'
             self.p.gt = self.p.pl.gettext
         else:
-            self.p.interface_language = 'en'
+            self.p.settings.interface_lang = 'en'
             self.p.gt = self.p.en.gettext
 
         with open('temp/output.txt', 'w+', encoding='UTF-8') as f:
@@ -127,20 +126,12 @@ class Settings(wx.Frame):
         self.Layout()
         self.p.Layout()
 
+    # Handle audio language changes
     def update_audio_language(self, args):
         value = self.audio_language_list.GetValue()
-        self.p.audio_language = audio_languages[value]
-        self.save()
-
-    def save(self):
-        data = {'fontSize': self.p.fontsize,
-                'transparencyValue': self.p.transparency_value,
-                'interfaceLang': self.p.interface_language,
-                'audioLang': self.p.audio_language}
-
-        with open('gui/settings.json', 'w', encoding='UTF-8') as f:
-            f.write(json.dumps(data))
+        self.p.settings.audio_lang = audio_languages[value]
+        self.p.settings.save_to_file()
 
     def exit(self, args):
-        self.save()
+        self.p.settings.save_to_file()
         self.Destroy()
