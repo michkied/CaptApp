@@ -12,7 +12,7 @@ class Settings(wx.Frame):
         self.SetBackgroundColour('white')
 
         self.Center(wx.BOTH)
-        self.SetIcon(wx.Icon("gui/resources/icon.ico"))
+        self.SetIcon(wx.Icon("app/gui/resources/icon.ico"))
 
         menu_font22 = wx.Font(22, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
         menu_font14 = wx.Font(14, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
@@ -20,7 +20,7 @@ class Settings(wx.Frame):
 
         # Create settings menu elements
 
-        self.settings_bitmap = wx.StaticBitmap(self, bitmap=wx.Bitmap(wx.Image('gui/resources/settings.png').Scale(150, 150, wx.IMAGE_QUALITY_HIGH)))
+        self.settings_bitmap = wx.StaticBitmap(self, bitmap=wx.Bitmap(wx.Image('app/gui/resources/settings.png').Scale(150, 150, wx.IMAGE_QUALITY_HIGH)))
         self.settings_label = wx.StaticText(self, label=self.p.gt("Settings"), style=wx.ALIGN_CENTER)
         self.settings_label.SetFont(menu_font22)
 

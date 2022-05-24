@@ -2,7 +2,7 @@ import wx
 import threading
 import time
 
-from CaptApp.recognition import recognition
+from ..recognition import recognition
 
 
 class Overlay(wx.Frame):

@@ -4,7 +4,7 @@ import gettext
 
 from .settings import Settings
 from .overlay import Overlay
-from CaptApp.common import AppSettings
+from ..common import AppSettings
 
 
 class Menu(wx.Frame):
@@ -13,7 +13,7 @@ class Menu(wx.Frame):
         self.SetBackgroundColour('white')
 
         self.Center(wx.BOTH)
-        self.SetIcon(wx.Icon("gui/resources/icon.ico"))
+        self.SetIcon(wx.Icon("app/gui/resources/icon.ico"))
 
         menu_font14 = wx.Font(14, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
 
@@ -21,9 +21,9 @@ class Menu(wx.Frame):
         self.settings = AppSettings()
 
         # Support multiple interface languages
-        self.pl = gettext.translation('strings', localedir='locales', languages=['pl'])
+        self.pl = gettext.translation('strings', localedir='app/locales', languages=['pl'])
         self.pl.install()
-        self.en = gettext.translation('strings', localedir='locales', languages=['en'])
+        self.en = gettext.translation('strings', localedir='app/locales', languages=['en'])
         self.en.install()
         if self.settings.interface_lang == 'pl':
             self.gt = self.pl.gettext
@@ -33,14 +33,14 @@ class Menu(wx.Frame):
         # Initiate GUI
         main_vertical_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.logo_bitmap = wx.StaticBitmap(self, bitmap=wx.Bitmap(wx.Image('gui/resources/logo.png').Scale(170, 170, wx.IMAGE_QUALITY_HIGH)))
+        self.logo_bitmap = wx.StaticBitmap(self, bitmap=wx.Bitmap(wx.Image('app/gui/resources/logo.png').Scale(170, 170, wx.IMAGE_QUALITY_HIGH)))
         main_vertical_sizer.Add(self.logo_bitmap, 0, wx.ALIGN_CENTER | wx.TOP, 30)
 
         column1 = wx.BoxSizer(wx.VERTICAL)
 
         self.is_toggle_run = True
         self.toggle_overlay_button = wx.Button(self, id=100, size=(100, 100))
-        self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('gui/resources/run.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
+        self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/run.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
         self.toggle_overlay_button.SetDefault()
         column1.Add(self.toggle_overlay_button, 0, wx.ALIGN_CENTER | wx.BOTTOM, 10)
 
@@ -51,7 +51,7 @@ class Menu(wx.Frame):
         column2 = wx.BoxSizer(wx.VERTICAL)
 
         self.open_settings_button = wx.Button(self, id=101, size=(100, 100))
-        self.open_settings_button.SetBitmap(wx.Bitmap(wx.Image('gui/resources/settings.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
+        self.open_settings_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/settings.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
         column2.Add(self.open_settings_button, 0, wx.ALIGN_CENTER | wx.BOTTOM, 10)
 
         self.open_settings_label = wx.StaticText(self, label=self.gt("Settings"), style=wx.ALIGN_CENTER)
@@ -79,13 +79,13 @@ class Menu(wx.Frame):
                 self.overlay = Overlay(self)
                 self.overlay.Show()
             self.overlay.SetFocus()
-            self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('gui/resources/stop.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
+            self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/stop.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
             self.toggle_label.SetLabel(self.gt('Stop'))
 
         else:
             self.is_toggle_run = True
             self.overlay.Destroy()
-            self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('gui/resources/run.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
+            self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/run.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
             self.toggle_label.SetLabel(self.gt('Run'))
 
         self.Layout()

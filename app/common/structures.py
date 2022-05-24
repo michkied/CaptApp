@@ -13,7 +13,7 @@ class AppSettings:
 
     def __init__(self):
         try:
-            with open('gui/settings.json', 'r', encoding='UTF-8') as f:
+            with open('app/gui/settings.json', 'r', encoding='UTF-8') as f:
                 settings = json.loads(f.read())
         except (json.decoder.JSONDecodeError, FileNotFoundError):
             settings = {
@@ -22,7 +22,7 @@ class AppSettings:
                 'interfaceLang': self.interface_lang,
                 'audioLang': self.audio_lang
             }
-            with open('gui/settings.json', 'w', encoding='UTF-8') as f:
+            with open('app/gui/settings.json', 'w', encoding='UTF-8') as f:
                 f.write(json.dumps(settings))
 
         self.font_size = settings['fontSize']
@@ -40,5 +40,5 @@ class AppSettings:
             'overlayHeight': self.overlay_height
         }
 
-        with open('gui/settings.json', 'w', encoding='UTF-8') as f:
+        with open('app/gui/settings.json', 'w', encoding='UTF-8') as f:
             f.write(json.dumps(data, indent=4))
