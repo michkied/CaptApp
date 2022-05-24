@@ -8,6 +8,8 @@ class AppSettings:
     transparency_value: int = 175
     interface_lang: str = 'en'
     audio_lang: str = 'en'
+    overlay_width: int = 2048
+    overlay_height: int = 79
 
     def __init__(self):
         try:
@@ -33,8 +35,10 @@ class AppSettings:
             'fontSize': self.font_size,
             'transparencyValue': self.transparency_value,
             'interfaceLang': self.interface_lang,
-            'audioLang': self.audio_lang
+            'audioLang': self.audio_lang,
+            'overlayWidth': self.overlay_width,
+            'overlayHeight': self.overlay_height
         }
 
         with open('gui/settings.json', 'w', encoding='UTF-8') as f:
-            f.write(json.dumps(data))
+            f.write(json.dumps(data, indent=4))

@@ -1,7 +1,8 @@
 import wx
 import threading
 import time
-import json
+
+from CaptApp.recognition import recognition
 
 
 class Overlay(wx.Frame):
@@ -17,20 +18,24 @@ class Overlay(wx.Frame):
         self.init_size()
 
         # Create caption
-        self.caption = wx.StaticText(self, label=self.p.gt("Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here"), style=wx.ALIGN_CENTER_HORIZONTAL, size=(self.width, self.height), pos=(0, 0))
+        self.caption = wx.StaticText(
+            self,
+            label=self.p.gt(
+                "Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here"
+            ),
+            style=wx.ALIGN_CENTER_HORIZONTAL, size=(self.width, self.height), pos=(0, 0)
+        )
         self.overlay_font = wx.Font(self.p.settings.font_size, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
         self.caption.SetForegroundColour((255, 255, 255))
         self.caption.SetFont(self.overlay_font)
 
-        # Save size data
-        with open('temp/display_data.json', 'w', encoding='UTF-8') as f:
-            f.write(json.dumps({'width': self.width, 'height': self.height}))
+        self.p.settings.overlay_width, self.p.settings.overlay_height = self.width, self.height
 
-        # Clear output file
-        with open('temp/output.txt', 'w+', encoding='UTF-8') as f:
-            f.write(self.p.gt("Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here"))
+        self.to_display = self.p.gt("Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here")
 
         # Run update_caption_loop in a thread
+        recognition_thread = threading.Thread(target=recognition.Recognition(self).recognition_loop)
+        recognition_thread.start()
         thread = threading.Thread(target=self.update_caption_loop)
         thread.start()
 
@@ -59,16 +64,8 @@ class Overlay(wx.Frame):
             except RuntimeError:
                 return
 
-            with open('temp/output.txt', 'r', encoding='UTF-8') as output:
-                text = output.read()
-
+            text = self.to_display
             if text != previous_text:
-
-                if text == '###ERROR###':
-                    text = self.p.gt('An error occurred. Please check your internet connection and restart CaptApp.')
-                elif text == '###CLEAR###':
-                    text = self.p.gt("Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here")
-
                 wx.CallAfter(self.caption.SetLabel, text)
             previous_text = text
             time.sleep(0.25)

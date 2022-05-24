@@ -1,26 +1,15 @@
 import time
 import speech_recognition as sr
-import json
 import threading
 
 r = sr.Recognizer()
 r.pause_threshold = 0.5
 
 
-def clear_output():
-    with open('temp/output.txt', 'w', encoding='UTF-8') as f:
-        f.write('###CLEAR###')
-
-
-def get_wrapped_lines(text_to_wrap):
+def get_wrapped_lines(text_to_wrap, overlay):
     # Get display data
-    with open('temp/display_data.json', 'r', encoding='UTF-8') as f:
-        data = json.loads(f.read())
 
-    with open('gui/settings.json', 'r', encoding='UTF-8') as f:
-        fontsize = json.loads(f.read())['fontSize']
-
-    num_of_chars = round(data['width'] / (fontsize * 0.75))
+    num_of_chars = round(overlay.width / (overlay.p.settings.font_size * 0.75))
 
     lines = []
 
@@ -42,13 +31,14 @@ def get_wrapped_lines(text_to_wrap):
 
 
 class Recognition:
-    def __init__(self):
+    def __init__(self, overlay):
+        self.overlay = overlay
         self.carry = ''
         self.chunk_queue = []
         self.next_chunk_id = 0
 
     def recognition_loop(self):
-        while True:
+        while not self.overlay.p.is_toggle_run:
             chunk_id = self.next_chunk_id
             self.next_chunk_id += 1
 
@@ -60,29 +50,30 @@ class Recognition:
                 recognition_thread.start()
 
     def process_audio(self, audio, chunk_id):
-
-        with open('gui/settings.json', 'r', encoding='UTF-8') as f:
-            language = json.loads(f.read())['audioLang']
+        language = self.overlay.p.settings.audio_lang
 
         # Perform speech recognition
         try:
             new_line = r.recognize_google(audio, language=language)
         except sr.UnknownValueError:
-            clear_output()
+            self.overlay.to_display = self.overlay.p.gt(
+                "Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here"
+            )
             self.carry = ''
         except sr.RequestError as e:
-            with open('temp/output.txt', 'w', encoding='UTF-8') as f:
-                f.write('###ERROR###')
+            self.overlay.to_display = self.overlay.p.gt(
+                'An error occurred. Please check your internet connection and restart CaptApp.'
+            )
 
         else:
             while chunk_id != min(self.chunk_queue):  # Ensure chunks are in the right order
                 time.sleep(0.1)
-            self.save(new_line)
+            self.display(new_line)
 
         self.chunk_queue.remove(chunk_id)
 
-    def save(self, new_line):
-        lines = get_wrapped_lines(self.carry + new_line)
+    def display(self, new_line):
+        lines = get_wrapped_lines(self.carry + new_line, self.overlay)
         new_text = '\n'.join(lines[:2])
 
         if len(lines) == 1:
@@ -93,8 +84,7 @@ class Recognition:
             else:
                 self.carry = '\n'.join(lines[2:]) + ' '  # If there are more than 2 lines, display them next time
 
-        with open('temp/output.txt', 'w', encoding='UTF-8') as f:
-            f.write(new_text)
+        self.overlay.to_display = new_text
 
         # Give time to read
         time.sleep(len(new_line) / 27)
@@ -102,13 +92,15 @@ class Recognition:
     def listen(self):
         try:
             with sr.Microphone(device_index=1) as source:
-                return r.listen(source, phrase_time_limit=10, timeout=12)
+                return r.listen(source, phrase_time_limit=5, timeout=12)
 
         except sr.WaitTimeoutError:
 
             # Wait until all is read
             while self.chunk_queue:
                 time.sleep(0.5)
-            clear_output()
+            self.overlay.to_display = self.overlay.p.gt(
+                "Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here"
+            )
 
             return None

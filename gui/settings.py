@@ -108,8 +108,10 @@ class Settings(wx.Frame):
             self.p.settings.interface_lang = 'en'
             self.p.gt = self.p.en.gettext
 
-        with open('temp/output.txt', 'w+', encoding='UTF-8') as f:
-            f.write(self.p.gt("Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here"))
+        try:
+            self.p.overlay.to_display = self.p.gt("Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here")
+        except AttributeError:
+            pass
 
         self.settings_label.SetLabel(self.p.gt("Settings"))
         self.fontsize_label.SetLabel(self.p.gt("Font size"))

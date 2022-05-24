@@ -72,6 +72,7 @@ class Menu(wx.Frame):
 
     def toggle_overlay(self, event):
         if self.is_toggle_run:
+            self.is_toggle_run = False
             try:
                 self.overlay.IsShown()
             except (AttributeError, RuntimeError):
@@ -80,13 +81,12 @@ class Menu(wx.Frame):
             self.overlay.SetFocus()
             self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('gui/resources/stop.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
             self.toggle_label.SetLabel(self.gt('Stop'))
-            self.is_toggle_run = False
 
         else:
+            self.is_toggle_run = True
             self.overlay.Destroy()
             self.toggle_overlay_button.SetBitmap(wx.Bitmap(wx.Image('gui/resources/run.png').Scale(70, 70, wx.IMAGE_QUALITY_HIGH)))
             self.toggle_label.SetLabel(self.gt('Run'))
-            self.is_toggle_run = True
 
         self.Layout()
 
@@ -99,6 +99,7 @@ class Menu(wx.Frame):
         self.settings_menu.SetFocus()
 
     def close(self, event):
+        self.settings.save_to_file()
         sys.exit()
 
 
