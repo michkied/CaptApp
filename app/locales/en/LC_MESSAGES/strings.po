@@ -41,3 +41,13 @@ msgstr "Run"
 
 msgid "Stop"
 msgstr "Stop"
+
+msgid "Save caption to file"
+msgstr "Save caption to file"
+
+msgid ""
+"The output file is located under\n"
+"app/.saved_captions/output.txt"
+msgstr ""
+"The output file is located under\n"
+"app/.saved_captions/output.txt"

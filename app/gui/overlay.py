@@ -1,6 +1,7 @@
 import wx
 import threading
 import time
+import datetime
 
 from ..recognition import recognition
 
@@ -16,22 +17,28 @@ class Overlay(wx.Frame):
         self.SetTransparent(self.p.settings.transparency_value)
 
         self.init_size()
+        self.p.settings.overlay_width, self.p.settings.overlay_height = self.width, self.height
+
+        self.welcome_text = 'Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here'
+        self.error_text = 'An error occurred. Please check your internet connection and restart CaptApp.'
 
         # Create caption
         self.caption = wx.StaticText(
             self,
-            label=self.p.gt(
-                "Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here"
-            ),
+            label=self.p.gt(self.welcome_text),
             style=wx.ALIGN_CENTER_HORIZONTAL, size=(self.width, self.height), pos=(0, 0)
         )
         self.overlay_font = wx.Font(self.p.settings.font_size, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
         self.caption.SetForegroundColour((255, 255, 255))
         self.caption.SetFont(self.overlay_font)
 
-        self.p.settings.overlay_width, self.p.settings.overlay_height = self.width, self.height
+        self.to_display = self.p.gt(self.welcome_text)
 
-        self.to_display = self.p.gt("Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here")
+        if self.p.settings.save_caption_to_file:
+            with open('app/.saved_caption/output.txt', 'a+', encoding='UTF-8') as f:
+                f.write(
+                    f'\n\n------------ {datetime.datetime.now().strftime("%H:%M:%S  %d/%m/%Y")}\n\n'
+                )
 
         # Run update_caption_loop in a thread
         recognition_thread = threading.Thread(target=recognition.Recognition(self).recognition_loop)
@@ -67,5 +74,15 @@ class Overlay(wx.Frame):
             text = self.to_display
             if text != previous_text:
                 wx.CallAfter(self.caption.SetLabel, text)
+
+                if self.p.settings.save_caption_to_file:
+                    if text not in (self.p.gt(self.welcome_text), self.p.gt(self.error_text)):
+
+                        with open('app/.saved_caption/output.txt', 'a+', encoding='UTF-8') as f:
+                            if text.split('\n')[0] == previous_text:
+                                f.write(text.split('\n')[1]+'\n')
+                            else:
+                                f.write(text+'\n')
+
             previous_text = text
             time.sleep(0.25)

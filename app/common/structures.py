@@ -8,8 +8,9 @@ class AppSettings:
     transparency_value: int = 175
     interface_lang: str = 'en'
     audio_lang: str = 'en'
-    overlay_width: int = 2048
-    overlay_height: int = 79
+    overlay_width: int = 0
+    overlay_height: int = 0
+    save_caption_to_file: bool = False
 
     def __init__(self):
         try:
@@ -20,7 +21,10 @@ class AppSettings:
                 'fontSize': self.font_size,
                 'transparencyValue': self.transparency_value,
                 'interfaceLang': self.interface_lang,
-                'audioLang': self.audio_lang
+                'audioLang': self.audio_lang,
+                'overlayWidth': self.overlay_width,
+                'overlayHeight': self.overlay_height,
+                'saveCaption': self.save_caption_to_file
             }
             with open('app/gui/settings.json', 'w', encoding='UTF-8') as f:
                 f.write(json.dumps(settings))
@@ -29,6 +33,9 @@ class AppSettings:
         self.transparency_value = settings['transparencyValue']
         self.interface_lang = settings['interfaceLang']
         self.audio_lang = settings['audioLang']
+        self.overlay_width = settings['overlayWidth']
+        self.overlay_height = settings['overlayHeight']
+        self.save_caption_to_file = settings['saveCaption']
 
     def save_to_file(self):
         data = {
@@ -37,7 +44,8 @@ class AppSettings:
             'interfaceLang': self.interface_lang,
             'audioLang': self.audio_lang,
             'overlayWidth': self.overlay_width,
-            'overlayHeight': self.overlay_height
+            'overlayHeight': self.overlay_height,
+            'saveCaption': self.save_caption_to_file
         }
 
         with open('app/gui/settings.json', 'w', encoding='UTF-8') as f:

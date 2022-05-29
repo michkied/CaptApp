@@ -8,7 +8,7 @@ class Settings(wx.Frame):
     def __init__(self, parent):
         self.p = parent
 
-        wx.Frame.__init__(self, None, title=self.p.gt('CaptApp - settings'), size=(450, 650))
+        wx.Frame.__init__(self, None, title=self.p.gt('CaptApp - settings'), size=(450, 750))
         self.SetBackgroundColour('white')
 
         self.Center(wx.BOTH)
@@ -58,6 +58,26 @@ class Settings(wx.Frame):
         self.audio_language_list.SetForegroundColour((0, 0, 0))
         self.audio_language_list.SetTransparent(70)
 
+        # Save caption to file
+        self.save_file_label = wx.StaticText(self, label=self.p.gt("Save caption to file"), style=wx.ALIGN_CENTER)
+        self.save_file_label.SetFont(menu_font14)
+
+        self.save_file_location_label = wx.StaticText(self, label=self.p.gt("The output file is located under\napp/.saved_captions/output.txt"), style=wx.ALIGN_CENTER)
+        self.save_file_location_label.SetFont(menu_font12)
+        self.save_file_location_label.SetForegroundColour((70, 70, 70))
+
+        self.toggle_save_file_button = wx.Button(self, id=1004, size=(42, 26), style=wx.NO_BORDER)
+        self.toggle_save_file_button.SetBackgroundColour((255, 255, 255))
+        if self.p.settings.save_caption_to_file:
+            self.toggle_save_file_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/on-button.png').Scale(42, 25, wx.IMAGE_QUALITY_HIGH)))
+        else:
+            self.toggle_save_file_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/off-button.png').Scale(42, 25, wx.IMAGE_QUALITY_HIGH)))
+
+        row_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        row_sizer.Add(self.save_file_label, 0, wx.ALIGN_CENTER | wx.RIGHT, 20)
+        row_sizer.Add(self.toggle_save_file_button, 0, wx.ALIGN_CENTER)
+
+
         # Align elements
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(self.settings_bitmap, 0, wx.ALIGN_CENTER | wx.TOP | wx.BOTTOM, 10)
@@ -70,6 +90,8 @@ class Settings(wx.Frame):
         sizer.Add(self.interface_language_list, 0, wx.ALIGN_CENTER | wx.TOP, 10)
         sizer.Add(self.audio_language_label, 0, wx.ALIGN_CENTER | wx.TOP, 25)
         sizer.Add(self.audio_language_list, 0, wx.ALIGN_CENTER | wx.TOP, 10)
+        sizer.Add(row_sizer, 0, wx.ALIGN_CENTER | wx.TOP, 30)
+        sizer.Add(self.save_file_location_label, 0, wx.ALIGN_CENTER | wx.TOP, 5)
         self.SetSizer(sizer)
 
         # Bind methods
@@ -77,6 +99,7 @@ class Settings(wx.Frame):
         self.Bind(wx.EVT_SCROLL, self.update_transparency, id=1001)
         self.Bind(wx.EVT_COMBOBOX, self.update_interface_language, id=1002)
         self.Bind(wx.EVT_COMBOBOX, self.update_audio_language, id=1003)
+        self.Bind(wx.EVT_BUTTON, self.update_save_file, id=1004)
         self.Bind(wx.EVT_CLOSE, self.exit)
 
     # Handle font size slider
@@ -109,7 +132,7 @@ class Settings(wx.Frame):
             self.p.gt = self.p.en.gettext
 
         try:
-            self.p.overlay.to_display = self.p.gt("Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here")
+            self.p.overlay.to_display = self.p.gt(self.p.welcome_text)
         except AttributeError:
             pass
 
@@ -133,6 +156,15 @@ class Settings(wx.Frame):
         value = self.audio_language_list.GetValue()
         self.p.settings.audio_lang = audio_languages[value]
         self.p.settings.save_to_file()
+
+    # Handle save file switch
+    def update_save_file(self, args):
+        if self.p.settings.save_caption_to_file:
+            self.toggle_save_file_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/off-button.png').Scale(42, 25, wx.IMAGE_QUALITY_HIGH)))
+            self.p.settings.save_caption_to_file = False
+        else:
+            self.toggle_save_file_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/on-button.png').Scale(42, 25, wx.IMAGE_QUALITY_HIGH)))
+            self.p.settings.save_caption_to_file = True
 
     def exit(self, args):
         self.p.settings.save_to_file()

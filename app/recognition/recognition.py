@@ -56,14 +56,10 @@ class Recognition:
         try:
             new_line = r.recognize_google(audio, language=language)
         except sr.UnknownValueError:
-            self.overlay.to_display = self.overlay.p.gt(
-                "Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here"
-            )
+            self.overlay.to_display = self.overlay.p.gt(self.overlay.welcome_text)
             self.carry = ''
         except sr.RequestError as e:
-            self.overlay.to_display = self.overlay.p.gt(
-                'An error occurred. Please check your internet connection and restart CaptApp.'
-            )
+            self.overlay.to_display = self.overlay.p.gt(self.overlay.error_text)
 
         else:
             while chunk_id != min(self.chunk_queue):  # Ensure chunks are in the right order
@@ -99,8 +95,6 @@ class Recognition:
             # Wait until all is read
             while self.chunk_queue:
                 time.sleep(0.5)
-            self.overlay.to_display = self.overlay.p.gt(
-                "Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here"
-            )
+            self.overlay.to_display = self.overlay.p.gt(self.overlay.welcome_text)
 
             return None

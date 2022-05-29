@@ -1,9 +1,9 @@
 # by Michał Kiedrzyński
 # 11/2021
 
-import app.gui as gui
+from app.gui.menu import run
 import threading
 
 if __name__ == '__main__':
-    app_thread = threading.Thread(target=gui.run)
+    app_thread = threading.Thread(target=run)
     app_thread.start()
