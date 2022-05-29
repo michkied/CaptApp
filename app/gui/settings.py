@@ -62,7 +62,7 @@ class Settings(wx.Frame):
         self.save_file_label = wx.StaticText(self, label=self.p.gt("Save caption to file"), style=wx.ALIGN_CENTER)
         self.save_file_label.SetFont(menu_font14)
 
-        self.save_file_location_label = wx.StaticText(self, label=self.p.gt("The output file is located under\napp/.saved_captions/output.txt"), style=wx.ALIGN_CENTER)
+        self.save_file_location_label = wx.StaticText(self, label=self.p.gt("The output file is located under")+'\napp/.saved_captions/output.txt', style=wx.ALIGN_CENTER)
         self.save_file_location_label.SetFont(menu_font12)
         self.save_file_location_label.SetForegroundColour((70, 70, 70))
 
@@ -141,6 +141,8 @@ class Settings(wx.Frame):
         self.transparency_label.SetLabel(self.p.gt('Window transparency'))
         self.interface_language_label.SetLabel(self.p.gt('Interface language'))
         self.audio_language_label.SetLabel(self.p.gt("Audio language"))
+        self.save_file_label.SetLabel(self.p.gt("Save caption to file"))
+        self.save_file_location_label.SetLabel(self.p.gt("The output file is located under")+'\napp/.saved_captions/output.txt')
 
         if self.p.is_toggle_run:
             self.p.toggle_label.SetLabel(self.p.gt("Run"))
