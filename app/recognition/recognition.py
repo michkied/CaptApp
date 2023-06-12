@@ -87,7 +87,7 @@ class Recognition:
 
     def listen(self):
         try:
-            with sr.Microphone(device_index=1) as source:
+            with sr.Speaker() as source:
                 return r.listen(source, phrase_time_limit=5, timeout=12)
 
         except sr.WaitTimeoutError:
