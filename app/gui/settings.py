@@ -8,7 +8,7 @@ class Settings(wx.Frame):
     def __init__(self, parent):
         self.p = parent
 
-        wx.Frame.__init__(self, None, title=self.p.gt('CaptApp - settings'), size=(450, 750))
+        wx.Frame.__init__(self, None, title=self.p.gt('CaptApp - settings'), size=(450, 780))
         self.SetBackgroundColour('white')
 
         self.Center(wx.BOTH)
@@ -73,10 +73,24 @@ class Settings(wx.Frame):
         else:
             self.toggle_save_file_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/off-button.png').Scale(42, 25, wx.IMAGE_QUALITY_HIGH)))
 
-        row_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        row_sizer.Add(self.save_file_label, 0, wx.ALIGN_CENTER | wx.RIGHT, 20)
-        row_sizer.Add(self.toggle_save_file_button, 0, wx.ALIGN_CENTER)
+        file_row_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        file_row_sizer.Add(self.save_file_label, 0, wx.ALIGN_CENTER | wx.RIGHT, 20)
+        file_row_sizer.Add(self.toggle_save_file_button, 0, wx.ALIGN_CENTER)
 
+        # Toggle displaying welcome message
+        self.display_welcome_label = wx.StaticText(self, label=self.p.gt("Display welcome message"), style=wx.ALIGN_CENTER)
+        self.display_welcome_label.SetFont(menu_font14)
+
+        self.toggle_display_welcome_button = wx.Button(self, id=1005, size=(42, 26), style=wx.NO_BORDER)
+        self.toggle_display_welcome_button.SetBackgroundColour((255, 255, 255))
+        if self.p.settings.display_welcome_message:
+            self.toggle_display_welcome_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/on-button.png').Scale(42, 25, wx.IMAGE_QUALITY_HIGH)))
+        else:
+            self.toggle_display_welcome_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/off-button.png').Scale(42, 25, wx.IMAGE_QUALITY_HIGH)))
+
+        display_row_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        display_row_sizer.Add(self.display_welcome_label, 0, wx.ALIGN_CENTER | wx.RIGHT, 20)
+        display_row_sizer.Add(self.toggle_display_welcome_button, 0, wx.ALIGN_CENTER)
 
         # Align elements
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -90,8 +104,9 @@ class Settings(wx.Frame):
         sizer.Add(self.interface_language_list, 0, wx.ALIGN_CENTER | wx.TOP, 10)
         sizer.Add(self.audio_language_label, 0, wx.ALIGN_CENTER | wx.TOP, 25)
         sizer.Add(self.audio_language_list, 0, wx.ALIGN_CENTER | wx.TOP, 10)
-        sizer.Add(row_sizer, 0, wx.ALIGN_CENTER | wx.TOP, 30)
+        sizer.Add(file_row_sizer, 0, wx.ALIGN_CENTER | wx.TOP, 30)
         sizer.Add(self.save_file_location_label, 0, wx.ALIGN_CENTER | wx.TOP, 5)
+        sizer.Add(display_row_sizer, 0, wx.ALIGN_CENTER | wx.TOP, 30)
         self.SetSizer(sizer)
 
         # Bind methods
@@ -100,6 +115,7 @@ class Settings(wx.Frame):
         self.Bind(wx.EVT_COMBOBOX, self.update_interface_language, id=1002)
         self.Bind(wx.EVT_COMBOBOX, self.update_audio_language, id=1003)
         self.Bind(wx.EVT_BUTTON, self.update_save_file, id=1004)
+        self.Bind(wx.EVT_BUTTON, self.update_display_welcome, id=1005)
         self.Bind(wx.EVT_CLOSE, self.exit)
 
     # Handle font size slider
@@ -132,7 +148,7 @@ class Settings(wx.Frame):
             self.p.gt = self.p.en.gettext
 
         try:
-            self.p.overlay.to_display = self.p.gt(self.p.welcome_text)
+            self.p.overlay.to_display = self.p.welcome_text
         except AttributeError:
             pass
 
@@ -143,6 +159,7 @@ class Settings(wx.Frame):
         self.audio_language_label.SetLabel(self.p.gt("Audio language"))
         self.save_file_label.SetLabel(self.p.gt("Save caption to file"))
         self.save_file_location_label.SetLabel(self.p.gt("The output file is located under")+'\napp/.saved_captions/output.txt')
+        self.display_welcome_label.SetLabel(self.p.gt("Display welcome message"))
 
         if self.p.is_toggle_run:
             self.p.toggle_label.SetLabel(self.p.gt("Run"))
@@ -167,6 +184,23 @@ class Settings(wx.Frame):
         else:
             self.toggle_save_file_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/on-button.png').Scale(42, 25, wx.IMAGE_QUALITY_HIGH)))
             self.p.settings.save_caption_to_file = True
+
+    # Handle display welcome message switch
+    def update_display_welcome(self, args):
+        if self.p.settings.display_welcome_message:
+            self.toggle_display_welcome_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/off-button.png').Scale(42, 25, wx.IMAGE_QUALITY_HIGH)))
+            self.p.settings.display_welcome_message = False
+            msg = ''
+        else:
+            self.toggle_display_welcome_button.SetBitmap(wx.Bitmap(wx.Image('app/gui/resources/on-button.png').Scale(42, 25, wx.IMAGE_QUALITY_HIGH)))
+            self.p.settings.display_welcome_message = True
+            msg = self.p.gt(self.p.welcome_text)
+
+        try:
+            self.p.overlay.welcome_text = msg
+            self.p.overlay.to_display = self.p.overlay.welcome_text
+        except AttributeError:
+            pass
 
     def exit(self, args):
         self.p.settings.save_to_file()

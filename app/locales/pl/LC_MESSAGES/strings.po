@@ -47,3 +47,6 @@ msgstr "Zapisz transkrypcję"
 
 msgid "The output file is located under"
 msgstr "Plik z transkrypcją jest zlokalizowany pod"
+
+msgid "Display welcome message"
+msgstr "Wyświetl wiadomość powitalną"

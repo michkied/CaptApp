@@ -19,20 +19,23 @@ class Overlay(wx.Frame):
         self.init_size()
         self.p.settings.overlay_width, self.p.settings.overlay_height = self.width, self.height
 
-        self.welcome_text = 'Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here'
+        if self.p.settings.display_welcome_message:
+            self.welcome_text = self.p.gt(self.p.welcome_text)
+        else:
+            self.welcome_text = ' '
         self.error_text = 'An error occurred. Please check your internet connection and restart CaptApp.'
 
         # Create caption
         self.caption = wx.StaticText(
             self,
-            label=self.p.gt(self.welcome_text),
+            label=self.welcome_text,
             style=wx.ALIGN_CENTER_HORIZONTAL, size=(self.width, self.height), pos=(0, 0)
         )
         self.overlay_font = wx.Font(self.p.settings.font_size, family=wx.DEFAULT, style=wx.NORMAL, weight=wx.BOLD)
         self.caption.SetForegroundColour((255, 255, 255))
         self.caption.SetFont(self.overlay_font)
 
-        self.to_display = self.p.gt(self.welcome_text)
+        self.to_display = self.welcome_text
 
         if self.p.settings.save_caption_to_file:
             with open('app/.saved_caption/output.txt', 'a+', encoding='UTF-8') as f:
@@ -76,7 +79,7 @@ class Overlay(wx.Frame):
                 wx.CallAfter(self.caption.SetLabel, text)
 
                 if self.p.settings.save_caption_to_file:
-                    if text not in (self.p.gt(self.welcome_text), self.p.gt(self.error_text)):
+                    if text not in (self.welcome_text, self.p.gt(self.error_text)):
 
                         with open('app/.saved_caption/output.txt', 'a+', encoding='UTF-8') as f:
                             if text.split('\n')[0] == previous_text:

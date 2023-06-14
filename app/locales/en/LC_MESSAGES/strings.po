@@ -47,3 +47,6 @@ msgstr "Save caption to file"
 
 msgid "The output file is located under"
 msgstr "The output file is located under"
+
+msgid "Display welcome message"
+msgstr "Display welcome message"

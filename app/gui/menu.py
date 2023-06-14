@@ -19,6 +19,7 @@ class Menu(wx.Frame):
 
         # Retrieve saved settings
         self.settings = AppSettings()
+        self.welcome_text = 'Welcome to CaptApp!\nPlay your audio and the transcription will be displayed here'
 
         # Support multiple interface languages
         self.pl = gettext.translation('strings', localedir='app/locales', languages=['pl'])
